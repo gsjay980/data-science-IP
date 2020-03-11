@@ -1,0 +1,47 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+black = "*"
+pytest = "*"
+pytest-testmon = "*"
+pytest-watch = "*"
+coverage = "*"
+pylint = "*"
+pylint-flask = "*"
+setuptools = "*"
+wheel = "*"
+
+[packages]
+flask = "*"
+waitress = "*"
+pandas = "*"
+pylint = "*"
+mypy = "*"
+mypy-extensions="*"
+
+[requires]
+python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true
+
+[scripts]
+setup = "pipenv install --dev"
+clean = "rm -rf .pytest_cache .tmontmp .coverage .testmondata htmlcov build dist flaskr.egg-info"
+lock-req = "sh -c 'pipenv lock -r > requirements.txt'"
+server-prod = "sh -c 'FLASK_APP=my_hello_world_app FLASK_ENV=production waitress-serve --call my_hello_world_app:start'"
+server-watch = "sh -c 'FLASK_APP=my_hello_world_app:start FLASK_ENV=development pipenv run flask run'"
+lint = "pylint --load-plugins pylint_flask my_hello_world_app tests"
+lint-types = "mypy my_hello_world_app tests --strict"
+format = "black ."
+test = "pytest"
+test-watch = "ptw -- --testmon"
+cov = "coverage run -m pytest"
+cov-report = "sh -c 'pipenv run cov && coverage report'"
+cov-html = "sh -c 'pipenv run cov && coverage html && open htmlcov/index.html'"
+build = 'pip wheel -w dist .'
+build-docker = "sh -c 'pipenv run build && IMAGE_TAG=${IMAGE_TAG:-latest}; docker build --build-arg docker_image_tag=$IMAGE_TAG --tag my-hello-world-app:$IMAGE_TAG .'"
+deploy-kubernetes-local = "sh ./scripts/local-kubernetes-deployment.sh"
